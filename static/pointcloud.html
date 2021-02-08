@@ -15,7 +15,7 @@
 			import { OrbitControls } from './OrbitControls.js';
 			import { PCDLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/PCDLoader.js';
 
-			let container, stats;
+			let container;
 			let camera, controls, scene, renderer;
 
 			init();
@@ -60,7 +60,7 @@
 
 				controls.enabled = false;
 				
-                controls.noPan = true;
+                // controls.noPan = true;
                 controls.noKeys = true;
                 // controls.noRotate = true;
 				controls.noZoom = true;
