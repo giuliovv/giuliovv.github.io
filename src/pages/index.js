@@ -89,19 +89,17 @@ const useStyles = makeStyles({
     },
     right: 10,
     zIndex: 200,
-    position: "absolute"
+    position: "absolute",
   },
 
   socialBasso:{
-    display: "inline",
+    display: "block",
     [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
       display: "none",
     },
     width: "100%",
-    zIndex: 200,
-    backgroundColor: "black",
-    position: "absolute",
-    marginTop: "100vh"
+    // backgroundColor: "white",
+    position: "relative",
   }
 
 });
@@ -112,7 +110,6 @@ function IndexPage() {
     <>
       <ThemeProvider theme={theme}>
         <SEO title="Home" />
-        <div>
           <div style={{height:"100%"}}>
             <div id="copertina">
               <div className={classes.socialAlto}>
@@ -132,7 +129,6 @@ function IndexPage() {
           <div className={classes.socialBasso}>
             <SocialIcons />
           </div>
-        </div>
       </ThemeProvider>
     </>
   )

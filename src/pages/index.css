@@ -4,9 +4,11 @@ html{
 
 #copertina {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     background-color: transparent;
-    position: absolute;
+    position: relative;
     color: "white";
     overflow: hidden;
+    bottom: 0;
+    top: 0;
 }
