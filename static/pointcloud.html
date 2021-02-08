@@ -47,7 +47,7 @@
 				document.body.appendChild( renderer.domElement );
 
 				const loader = new PCDLoader();
-				loader.load( './models/pcd/binary/Zaghetto.pcd', function ( points ) {
+				loader.load( './Zaghetto.pcd', function ( points ) {
 
 					scene.add( points );
 					const center = points.geometry.boundingSphere.center;
