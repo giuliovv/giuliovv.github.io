@@ -5,4 +5,5 @@
     position: absolute;
     color: "white";
     display: table;
+    overflow: hidden;
 }

@@ -28,15 +28,24 @@ const theme = createMuiTheme({
 
 theme.typography.h1 = {
   fontSize: '29vw',
-  [theme.breakpoints.up('md')]: {
+  [`${theme.breakpoints.up('sm')} and (orientation: landscape)`]: {
     fontSize: '8rem',
+  },
+  [`${theme.breakpoints.down('sm')} and (orientation: landscape)`]: {
+    fontSize: '10vw',
   },
 };
 
 theme.typography.h2 = {
   fontSize: '22vw',
-  [theme.breakpoints.up('md')]: {
-    fontSize: '8rem',
+  [`${theme.breakpoints.up('lg')} and (orientation: landscape)`]: {
+    fontSize: '9rem',
+  },
+  [`${theme.breakpoints.down('sm')} and (orientation: landscape)`]: {
+    fontSize: '11vw',
+  },
+  [`${theme.breakpoints.down('lg')} and (orientation: landscape)`]: {
+    fontSize: '11vw',
   },
 };
 
@@ -51,7 +60,7 @@ const useStyles = makeStyles({
     marginTop: -100,
     left: 0,
     zIndex: 1,
-    [`${theme.breakpoints.up('sm')} and (orientation: landscape)`]: {
+    [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
       width: "70%",
       marginTop: 0,
     },
@@ -62,11 +71,10 @@ const useStyles = makeStyles({
     zIndex: 200,
     position: "absolute",
     bottom: 0,
-    width: "100%",
     marginLeft: "auto",
     marginRight: "auto",
     textAlign: "center",
-    [`${theme.breakpoints.up('sm')} and (orientation: landscape)`]: {
+    [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
       top: "20vw",
       marginLeft: "50%",
       textAlign: "left",
