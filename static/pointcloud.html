@@ -12,8 +12,6 @@
 
 			import * as THREE from './three.module.js';
 
-			import Stats from 'https://unpkg.com/three@0.120.1/examples/jsm/libs/stats.module.js';
-
 			import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
 			import { OrbitControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/OrbitControls.js';
 			import { PCDLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/PCDLoader.js';
@@ -44,6 +42,7 @@
 				loader.load( './Zaghetto.pcd', function ( points ) {
 
 					scene.add( points );
+					points.material.color.setHex( 0xff2d00 );
 					const center = points.geometry.boundingSphere.center;
 					controls.target.set( center.x, center.y, center.z );
 					controls.update();
@@ -80,8 +79,6 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
-                // window.addEventListener( 'keypress', keyboard );
-
             }
 
 			function onWindowResize() {
@@ -91,30 +88,6 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				controls.handleResize();
 
-			}
-
-			function keyboard( ev ) {
-
-				const points = scene.getObjectByName( 'Zaghetto.pcd' );
-
-				switch ( ev.key || String.fromCharCode( ev.keyCode || ev.charCode ) ) {
-
-					case '+':
-						points.material.size *= 1.2;
-						points.material.needsUpdate = true;
-						break;
-
-					case '-':
-						points.material.size /= 1.2;
-						points.material.needsUpdate = true;
-						break;
-
-					case 'c':
-						points.material.color.setHex( Math.random() * 0xffffff );
-						points.material.needsUpdate = true;
-						break;
-
-				}
 			}
 
 
