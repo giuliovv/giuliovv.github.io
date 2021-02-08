@@ -86,7 +86,7 @@ function IndexPage() {
             <div>
               <Typography display="inline" variant="h1">GIULIO</Typography>
             </div>
-            <div>
+            <div style={{marginTop: "-15px"}}>
               <Typography display="inline" variant="h2">VACCARI</Typography>
             </div>
           </div>
