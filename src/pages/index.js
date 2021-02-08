@@ -5,7 +5,7 @@ import SEO from "../components/seo"
 const IndexPage = () => (
   <>
     <SEO title="Home" />
-    <iframe title="bg" id="bg" src='https://www.aeapolimi.it/robotrender.html' frameBorder="0" loading="lazy"/>
+    <iframe title="bg" id="bg" src='giuliovaccari.it/testsito/pointcloud.html' frameBorder="0" loading="lazy"/>
   </>
 )
 

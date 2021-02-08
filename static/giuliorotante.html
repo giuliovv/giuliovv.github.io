@@ -1,82 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - PCD</title>
+		<title>three.js webgl - glTF loader</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
+
 	<body>
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
-			<a href="http://pointclouds.org/documentation/tutorials/pcd_file_format.php#pcd-file-format" target="_blank" rel="noopener">PCD File format</a>
-			<div>PCD loader test by <a href="http://filipecaixeta.com.br" target="_blank" rel="noopener">Filipe Caixeta</a></div>
-			<div>+/-: Increase/Decrease point size</div>
-			<div>c: Change color</div>
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - GLTFLoader<br />
+			Battle Damaged Sci-fi Helmet by
+			<a href="https://sketchfab.com/theblueturtle_" target="_blank" rel="noopener">theblueturtle_</a><br />
+			<a href="https://hdrihaven.com/hdri/?h=royal_esplanade" target="_blank" rel="noopener">Royal Esplanade</a> by <a href="https://hdrihaven.com/" target="_blank" rel="noopener">HDRI Haven</a>
 		</div>
 
 		<script type="module">
 
 			import * as THREE from './three.module.js';
 
-			import Stats from 'https://unpkg.com/three@0.120.1/examples/jsm/libs/stats.module.js';
+			import { OrbitControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/OrbitControls.js';
+			import { GLTFLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/GLTFLoader.js';
+			import { RGBELoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/RGBELoader.js';
+			import { RoughnessMipmapper } from 'https://unpkg.com/three@0.120.1/examples/jsm/utils/RoughnessMipmapper.js';
 
-			import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
-			import { PCDLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/PCDLoader.js';
-
-			let container, stats;
-			let camera, controls, scene, renderer;
+			let camera, scene, renderer;
 
 			init();
-			animate();
+			render();
+
 			function init() {
 
+				const container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 20 );
+				camera.position.set( - 1.8, 0.6, 2.7 );
+
 				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0x000000 );
 
-				camera = new THREE.PerspectiveCamera( 15, window.innerWidth / window.innerHeight, 0.01, 40 );
-				camera.position.x = 0.4;
-				camera.position.z = - 2;
-				camera.up.set( 0, 0, 1 );
+				new RGBELoader()
+					.setDataType( THREE.UnsignedByteType )
+					.setPath( 'https://threejs.org/examples/textures/equirectangular/' )
+					.load( 'royal_esplanade_1k.hdr', function ( texture ) {
 
-				scene.add( camera );
+						const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
+
+						scene.background = envMap;
+						scene.environment = envMap;
+
+						texture.dispose();
+						pmremGenerator.dispose();
+
+						render();
+
+						// model
+
+						// use of RoughnessMipmapper is optional
+						const roughnessMipmapper = new RoughnessMipmapper( renderer );
+
+						const loader = new GLTFLoader().setPath( './' );
+						loader.load( 'facciastandard_pointcloud.glb', function ( gltf ) {
+
+							gltf.scene.traverse( function ( child ) {
+
+								if ( child.isMesh ) {
+
+									// TOFIX RoughnessMipmapper seems to be broken with WebGL 2.0
+									// roughnessMipmapper.generateMipmaps( child.material );
+
+								}
+
+							} );
+
+							scene.add( gltf.scene );
+
+							roughnessMipmapper.dispose();
+
+							render();
+
+						} );
+
+					} );
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
-
-				const loader = new PCDLoader();
-				loader.load( 'https://threejs.org/examples/models/pcd/binary/Zaghetto.pcd', function ( points ) {
-
-					scene.add( points );
-					const center = points.geometry.boundingSphere.center;
-					controls.target.set( center.x, center.y, center.z );
-					controls.update();
-
-				} );
-
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				renderer.toneMappingExposure = 1;
+				renderer.outputEncoding = THREE.sRGBEncoding;
 				container.appendChild( renderer.domElement );
 
-				controls = new TrackballControls( camera, renderer.domElement );
+				const pmremGenerator = new THREE.PMREMGenerator( renderer );
+				pmremGenerator.compileEquirectangularShader();
 
-				controls.rotateSpeed = 2.0;
-				controls.zoomSpeed = 0.3;
-				controls.panSpeed = 0.2;
-
-				controls.staticMoving = true;
-
-				controls.minDistance = 0.3;
-				controls.maxDistance = 0.3 * 100;
-
-				stats = new Stats();
-				container.appendChild( stats.dom );
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.addEventListener( 'change', render ); // use if there is no animation loop
+				controls.minDistance = 2;
+				controls.maxDistance = 10;
+				controls.target.set( 0, 0, - 0.2 );
+				controls.update();
 
 				window.addEventListener( 'resize', onWindowResize, false );
-
-				window.addEventListener( 'keypress', keyboard );
 
 			}
 
@@ -84,45 +109,22 @@
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
+
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				controls.handleResize();
+
+				render();
 
 			}
 
-			function keyboard( ev ) {
+			//
 
-				const points = scene.getObjectByName( 'Zaghetto.pcd' );
+			function render() {
 
-				switch ( ev.key || String.fromCharCode( ev.keyCode || ev.charCode ) ) {
-
-					case '+':
-						points.material.size *= 1.2;
-						points.material.needsUpdate = true;
-						break;
-
-					case '-':
-						points.material.size /= 1.2;
-						points.material.needsUpdate = true;
-						break;
-
-					case 'c':
-						points.material.color.setHex( Math.random() * 0xffffff );
-						points.material.needsUpdate = true;
-						break;
-
-				}
-
-			}
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-				controls.update();
 				renderer.render( scene, camera );
-				stats.update();
 
 			}
 
 		</script>
+
 	</body>
 </html>
