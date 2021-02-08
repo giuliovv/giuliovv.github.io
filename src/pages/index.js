@@ -65,8 +65,8 @@ const useStyles = makeStyles({
     bottom: 0,
     top: 0,
     [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
-      // width: "200%",
-      // overflowX: "scroll",
+      width: "200%",
+      overflow: "hidden",
     },
   },
 
@@ -89,9 +89,10 @@ const useStyles = makeStyles({
     zIndex: 200,
     position: "absolute",
     bottom: 0,
-    marginLeft: "auto",
+    marginLeft: "5px",
     marginRight: "auto",
     textAlign: "center",
+    overflow: "hidden",
     [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
       top: "20vw",
       marginLeft: "50%",
