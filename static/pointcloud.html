@@ -7,13 +7,6 @@
 		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
 	<body>
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
-			<a href="http://pointclouds.org/documentation/tutorials/pcd_file_format.php#pcd-file-format" target="_blank" rel="noopener">PCD File format</a>
-			<div>PCD loader test by <a href="http://filipecaixeta.com.br" target="_blank" rel="noopener">Filipe Caixeta</a></div>
-			<div>+/-: Increase/Decrease point size</div>
-			<div>c: Change color</div>
-		</div>
 
 		<script type="module">
 
@@ -22,6 +15,7 @@
 			import Stats from 'https://unpkg.com/three@0.120.1/examples/jsm/libs/stats.module.js';
 
 			import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
+			import { OrbitControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/OrbitControls.js';
 			import { PCDLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/PCDLoader.js';
 
 			let container, stats;
@@ -37,7 +31,7 @@
 				camera = new THREE.PerspectiveCamera( 15, window.innerWidth / window.innerHeight, 0.01, 40 );
 				camera.position.x = 0.4;
 				camera.position.z = - 2;
-				camera.up.set( 0, 0, 1 );
+                camera.up.set( 0, -1, 0 );
 
 				scene.add( camera );
 
@@ -60,25 +54,35 @@
 				document.body.appendChild( container );
 				container.appendChild( renderer.domElement );
 
-				controls = new TrackballControls( camera, renderer.domElement );
+				// controls = new TrackballControls( camera, renderer.domElement );
+				controls = new OrbitControls( camera, renderer.domElement );
 
-				controls.rotateSpeed = 2.0;
-				controls.zoomSpeed = 0.3;
-				controls.panSpeed = 0.2;
+				controls.autoRotate = true;
+				controls.autoRotateSpeed *= -1;
+                
+                // controls.noPan = true;
+                // controls.noKeys = true;
+                // controls.noRotate = true;
+                // controls.noZoom = true;
+                // controls.rotateSpeed = 1;
 
-				controls.staticMoving = true;
+				// controls.rotateSpeed = 2.0;
+				// controls.zoomSpeed = 0.3;
+				// controls.panSpeed = 0.2;
 
-				controls.minDistance = 0.3;
-				controls.maxDistance = 0.3 * 100;
+				// controls.staticMoving = true;
 
-				stats = new Stats();
-				container.appendChild( stats.dom );
+				// controls.minDistance = 0.3;
+                // controls.maxDistance = 0.3 * 100;
+                
+                // const axesHelper = new THREE.AxesHelper( 5 );
+                // scene.add( axesHelper );
 
 				window.addEventListener( 'resize', onWindowResize );
 
-				window.addEventListener( 'keypress', keyboard );
+                // window.addEventListener( 'keypress', keyboard );
 
-			}
+            }
 
 			function onWindowResize() {
 
@@ -111,15 +115,14 @@
 						break;
 
 				}
-
 			}
+
 
 			function animate() {
 
 				requestAnimationFrame( animate );
-				controls.update();
+                controls.update();
 				renderer.render( scene, camera );
-				stats.update();
 
 			}
 
