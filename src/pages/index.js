@@ -62,10 +62,14 @@ const useStyles = makeStyles({
     zIndex: 200,
     position: "absolute",
     bottom: 0,
-    marginLeft: 0,
+    width: "100%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    textAlign: "center",
     [`${theme.breakpoints.up('sm')} and (orientation: landscape)`]: {
       top: "20vw",
       marginLeft: "50%",
+      textAlign: "left",
     },
   }
 
