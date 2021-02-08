@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - PCD</title>
+		<title>PCD che ruota</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -12,8 +12,7 @@
 
 			import * as THREE from './three.module.js';
 
-			import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
-			import { OrbitControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/OrbitControls.js';
+			import { OrbitControls } from './OrbitControls.js';
 			import { PCDLoader } from 'https://unpkg.com/three@0.120.1/examples/jsm/loaders/PCDLoader.js';
 
 			let container, stats;
@@ -58,16 +57,13 @@
 
 				controls.autoRotate = true;
 				controls.autoRotateSpeed *= -1;
-                
-                // controls.noPan = true;
-                // controls.noKeys = true;
-                // controls.noRotate = true;
-                // controls.noZoom = true;
-                // controls.rotateSpeed = 1;
 
-				// controls.rotateSpeed = 2.0;
-				// controls.zoomSpeed = 0.3;
-				// controls.panSpeed = 0.2;
+				controls.enabled = false;
+				
+                controls.noPan = true;
+                controls.noKeys = true;
+                // controls.noRotate = true;
+				controls.noZoom = true;
 
 				// controls.staticMoving = true;
 
