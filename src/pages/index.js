@@ -134,7 +134,12 @@ const useStyles = makeStyles({
     overflow: "hidden",
     width: "100%",
     [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
-      overflowX: "scroll"
+      overflowX: "scroll",
+      "-ms-overflow-style": "none",
+      scrollbarWidth: "none",
+      "&::-webkit-scrollbar":{
+        display:"none",
+      }
     },
   },
 
@@ -182,7 +187,7 @@ const useStyles = makeStyles({
     right: 0,
     [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
       width: "40%",
-      paddingRight: "5%"
+      paddingRight: "5%",
     },
   },
 
@@ -226,10 +231,9 @@ const useStyles = makeStyles({
     [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
       width: "45%",
       paddingRight: "5%",
-      height: "100%",
       position: "absolute",
       overflowY: "scroll",
-      transform: "translateY(10%)",
+      height: "100%",
     },
   },
 
@@ -319,7 +323,7 @@ function IndexPage() {
                         <ul >
                           <li><Typography variant="body1" gutterBottom>Python</Typography></li>
                           <li><Typography variant="body1" gutterBottom>Pandas, Numpy, Cython, Tensorflow, Baselines and many more</Typography></li>
-                          <li><Typography variant="body1" gutterBottom>NoSQL, GraphQL</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>SQL, NoSQL, GraphQL</Typography></li>
                         </ul> 
                       </Grid>
                       <Grid item>
