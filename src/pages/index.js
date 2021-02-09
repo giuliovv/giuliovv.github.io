@@ -56,6 +56,14 @@ theme.typography.h2 = {
   },
 };
 
+theme.typography.h3 = {
+  textAlign: "left",
+  marginBottom: "20px",
+  [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
+    textAlign: "center",
+  },
+};
+
 const useStyles = makeStyles({
 
   copertina: {
@@ -178,6 +186,19 @@ const useStyles = makeStyles({
     },
   },
 
+  contenutoSkills:{
+    height: "100%",
+    backgroundColor: "transparent",
+    color: "white",
+    display: "table",
+    position:"absolute",
+    width: "100%",
+    [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
+      width: "200%",
+      overflowX: "scroll",
+    },
+  },
+
   testoSkills:{
     height: "100%",
     display: "block",
@@ -191,6 +212,24 @@ const useStyles = makeStyles({
       right: "auto",
       left: 30,
       transform: "rotate(-90deg)",
+    },
+  },
+
+  listaSkills: {
+    position: "relative",
+    display: "table-cell",
+    verticalAlign: "middle",
+    margin: "0 auto",
+    width: "70%",
+    right: 0,
+    textAlign: "left",
+    [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
+      width: "45%",
+      paddingRight: "5%",
+      height: "100%",
+      position: "absolute",
+      overflowY: "scroll",
+      // transform: "translateY(10%)",
     },
   },
 
@@ -250,48 +289,48 @@ function IndexPage() {
             </div>
           </div>
           <div id="skills" className={classes.about}>
-            <div id="contenutoSkills" className={classes.contenutoAbout}>
+            <div id="contenutoSkills" className={classes.contenutoSkills}>
               <div className={classes.testoSkills}>
                 <Typography variant="h1" style={{fontSize: "26.5vh"}}>SKILLS</Typography>
               </div>
               <IconButton aria-label="scrollRight" className={classes.scrollRight} onClick={() => scrollToSkills()}>
                 <KeyboardArrowRightIcon style={{fill:"white"}}/>
               </IconButton>
-              <Grid
-                container
-                direction="column"
-                justify="center"
-                alignItems="center"
-                className={classes.listaAbout}
-                ref={skillsRef}
-                spacing={3}
-                >
-                    <Grid item>
-                      <Typography variant="h3" gutterBottom>Control Systems & Robotics</Typography>
-                      <ul >
-                        <li><Typography variant="body1" gutterBottom>A degree in Automation Engineering</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>MATLAB</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>ROS, LabView, Ladder</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>C and C++</Typography></li>
-                      </ul> 
-                    </Grid>
-                    <Grid item>
-                    <Typography variant="h3" gutterBottom>Data Science</Typography>
-                      <ul >
-                        <li><Typography variant="body1" gutterBottom>Python</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>Pandas, Numpy, Cython, Tensorflow, Baselines and many more</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>NoSQL, GraphQL</Typography></li>
-                      </ul> 
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h3" gutterBottom>App development</Typography>
-                      <ul >
-                        <li><Typography variant="body1" gutterBottom>React, Gatsby</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>Flutter</Typography></li>
-                        <li><Typography variant="body1" gutterBottom>Firebase</Typography></li>
-                      </ul> 
-                    </Grid>
-              </Grid>
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="center"
+                  className={classes.listaSkills}
+                  ref={skillsRef}
+                  spacing={3}
+                  >
+                      <Grid item>
+                        <Typography variant="h3">Control Systems & Robotics</Typography>
+                        <ul >
+                          <li><Typography variant="body1" gutterBottom>A degree in Automation Engineering</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>MATLAB</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>ROS, LabView, Ladder</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>GO, C and C++</Typography></li>
+                        </ul> 
+                      </Grid>
+                      <Grid item>
+                      <Typography variant="h3">Data Science</Typography>
+                        <ul >
+                          <li><Typography variant="body1" gutterBottom>Python</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>Pandas, Numpy, Cython, Tensorflow, Baselines and many more</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>NoSQL, GraphQL</Typography></li>
+                        </ul> 
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="h3">App development</Typography>
+                        <ul >
+                          <li><Typography variant="body1" gutterBottom>React, Gatsby</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>Flutter</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>Firebase</Typography></li>
+                        </ul> 
+                      </Grid>
+                </Grid>
             </div>
           </div>
       </ThemeProvider>
