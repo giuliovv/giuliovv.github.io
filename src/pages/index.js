@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { createMuiTheme, ThemeProvider, makeStyles } from '@material-ui/core/styles';
 
 import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import red from '@material-ui/core/colors/red';
@@ -175,15 +176,35 @@ const useStyles = makeStyles({
       width: "40%",
       paddingRight: "5%"
     },
-  }
+  },
+
+  testoSkills:{
+    height: "100%",
+    display: "block",
+    transform: "rotate(90deg)",
+    color: "white",
+    position: "absolute",
+    textAlign: "left",
+    right: 30,
+    bottom: 0,
+    [`${theme.breakpoints.up('xs')} and (orientation: portrait)`]: {
+      right: "auto",
+      left: 30,
+      transform: "rotate(-90deg)",
+    },
+  },
 
 });
 
 function IndexPage() {
   const classes = useStyles();
   const aboutRef = useRef(null);
+  const skillsRef = useRef(null);
   const scrollToAbout = () => {
     aboutRef.current.scrollIntoView({ behavior: 'smooth' })
+  };
+  const scrollToSkills = () => {
+    skillsRef.current.scrollIntoView({ behavior: 'smooth' })
   };
     return(
     <>
@@ -221,9 +242,56 @@ function IndexPage() {
                 <li><Typography variant="body1" gutterBottom>Marostica - Milano</Typography></li>
                 <li><Typography variant="body1" gutterBottom>Automation Engineering @Politecnico di Milano 2017-2020</Typography></li>
                 <li><Typography variant="body1" gutterBottom> MSc Automation Engineering @Politecnico di Milano 2020-2022</Typography></li>
-                <li><Typography variant="body1" gutterBottom> Runner-up NASA Space Apps Challenge 2018, Founder <Link color="primary" href="www.airhive.it">Airhive</Link></Typography></li>
+                <li><Typography variant="body1" gutterBottom> Global Nominee NASA Space Apps Challenge 2018, Founder <Link color="primary" href="http://www.airhive.it">Airhive</Link></Typography></li>
                 <li><Typography variant="body1" gutterBottom> President and Founder <Link color="primary" href="https://www.aeapolimi.it">AEA</Link></Typography></li>
+                <li><Typography variant="body1" gutterBottom> Italian and English (TOEFL iBT 101), Chinese under development</Typography></li>
+                <li><Typography variant="body1" gutterBottom> Fencer, skier and tennis player</Typography></li>
               </ul> 
+            </div>
+          </div>
+          <div id="skills" className={classes.about}>
+            <div id="contenutoSkills" className={classes.contenutoAbout}>
+              <div className={classes.testoSkills}>
+                <Typography variant="h1" style={{fontSize: "26.5vh"}}>SKILLS</Typography>
+              </div>
+              <IconButton aria-label="scrollRight" className={classes.scrollRight} onClick={() => scrollToSkills()}>
+                <KeyboardArrowRightIcon style={{fill:"white"}}/>
+              </IconButton>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="center"
+                className={classes.listaAbout}
+                ref={skillsRef}
+                spacing={3}
+                >
+                    <Grid item>
+                      <Typography variant="h3" gutterBottom>Control Systems & Robotics</Typography>
+                      <ul >
+                        <li><Typography variant="body1" gutterBottom>A degree in Automation Engineering</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>MATLAB</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>ROS, LabView, Ladder</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>C and C++</Typography></li>
+                      </ul> 
+                    </Grid>
+                    <Grid item>
+                    <Typography variant="h3" gutterBottom>Data Science</Typography>
+                      <ul >
+                        <li><Typography variant="body1" gutterBottom>Python</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>Pandas, Numpy, Cython, Tensorflow, Baselines and many more</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>NoSQL, GraphQL</Typography></li>
+                      </ul> 
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h3" gutterBottom>App development</Typography>
+                      <ul >
+                        <li><Typography variant="body1" gutterBottom>React, Gatsby</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>Flutter</Typography></li>
+                        <li><Typography variant="body1" gutterBottom>Firebase</Typography></li>
+                      </ul> 
+                    </Grid>
+              </Grid>
             </div>
           </div>
       </ThemeProvider>
