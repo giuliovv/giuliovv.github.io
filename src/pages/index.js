@@ -262,7 +262,7 @@ function IndexPage() {
                   <Typography display="inline" variant="h2">VACCARI</Typography>
                 </div>
               </div>
-              <iframe title="bg" className={classes.bg} src='https://giuliovv.github.io/testsito/pointcloud.html' frameBorder="0" loading="lazy"/>
+              <iframe title="bg" scrolling="no" className={classes.bg} src='https://giuliovv.github.io/testsito/pointcloud.html' frameBorder="0" loading="lazy"/>
             </div>
           </div>
           <div className={classes.socialBasso}>
