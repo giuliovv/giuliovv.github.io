@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>PCD che ruota</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<script type="module">
+
+			import * as THREE from './three.module.js';
+
+			import { OrbitControls } from './OrbitControls.js';
+			import { PCDLoader } from './PCDLoader.js';
+
+			let container;
+			let camera, controls, scene, renderer;
+
+			init();
+			animate();
+			function init() {
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x000000 );
+
+				camera = new THREE.PerspectiveCamera( 15, window.innerWidth / window.innerHeight, 0.01, 40 );
+				camera.position.x = 0.4;
+				camera.position.z = - 2;
+                camera.up.set( 0, -1, 0 );
+
+				scene.add( camera );
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				const loader = new PCDLoader();
+				loader.load( './Zaghetto.pcd', function ( points ) {
+
+					scene.add( points );
+					points.material.color.setHex( 0xff2d00 );
+					const center = points.geometry.boundingSphere.center;
+					controls.target.set( center.x, center.y, center.z );
+					controls.update();
+
+				} );
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				container.appendChild( renderer.domElement );
+
+				// controls = new TrackballControls( camera, renderer.domElement );
+				controls = new OrbitControls( camera, renderer.domElement );
+
+				controls.autoRotate = true;
+				controls.autoRotateSpeed *= -1;
+
+				controls.enabled = false;
+				
+                // controls.noPan = true;
+                controls.noKeys = true;
+                // controls.noRotate = true;
+				controls.noZoom = true;
+
+				// controls.staticMoving = true;
+
+				// controls.minDistance = 0.3;
+                // controls.maxDistance = 0.3 * 100;
+                
+                // const axesHelper = new THREE.AxesHelper( 5 );
+                // scene.add( axesHelper );
+
+				window.addEventListener( 'resize', onWindowResize );
+
+            }
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				controls.handleResize();
+
+			}
+
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+                controls.update();
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>
