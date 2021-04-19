@@ -316,6 +316,7 @@ function IndexPage() {
                           <li><Typography variant="body1" gutterBottom>MATLAB</Typography></li>
                           <li><Typography variant="body1" gutterBottom>ROS, LabView, Ladder</Typography></li>
                           <li><Typography variant="body1" gutterBottom>GO, C and C++</Typography></li>
+                          <li><Typography variant="body1" gutterBottom>Git and Linux headless heavy user</Typography></li>
                         </ul> 
                       </Grid>
                       <Grid item>
