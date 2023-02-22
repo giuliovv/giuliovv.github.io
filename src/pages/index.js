@@ -286,7 +286,7 @@ function IndexPage() {
                 <li><Typography variant="body1" gutterBottom>Automation Engineering @Politecnico di Milano 2017-2020</Typography></li>
                 <li><Typography variant="body1" gutterBottom> MSc Automation Engineering @Politecnico di Milano 2020-2022</Typography></li>
                 <li><Typography variant="body1" gutterBottom> Global Nominee NASA Space Apps Challenge 2018, Founder <Link color="primary" href="http://www.airhive.it">Airhive</Link></Typography></li>
-                <li><Typography variant="body1" gutterBottom> President and Founder <Link color="primary" href="https://www.aeapolimi.it">AEA</Link></Typography></li>
+                <li><Typography variant="body1" gutterBottom> President and Founder <Link color="primary" href="https://www.aeapolimi.it">AEA</Link>, Founder and CTO <Link color="primary" href="https://www.huakatravel.com">Huaka</Link></Typography></li>
                 <li><Typography variant="body1" gutterBottom> Italian and English (TOEFL iBT 101), Chinese under development</Typography></li>
                 <li><Typography variant="body1" gutterBottom> Fencer, skier and tennis player</Typography></li>
               </ul> 
