@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Scene } from '../components/Scene';
+import { Overlay } from '../components/Overlay';
+---
+
+<Layout title="Giulio Vaccari - Life in Lap Times">
+	<main className="relative w-full h-screen overflow-hidden bg-black">
+		<div className="absolute inset-0 z-0">
+			<Scene client:only="react" />
+		</div>
+		<div className="absolute inset-0 z-10 pointer-events-none">
+			<Overlay client:load />
+		</div>
+	</main>
+</Layout>
