@@ -6,11 +6,12 @@ import * as THREE from 'three';
 
 interface CheckpointProps {
     stop: Stop;
+    rotation?: THREE.Euler;
 }
 
-export function Checkpoint({ stop }: CheckpointProps) {
+export function Checkpoint({ stop, rotation }: CheckpointProps) {
     const [hovered, setHovered] = useState(false);
-    const markerRef = useRef<THREE.Mesh>(null);
+    const markerRef = useRef<THREE.Group>(null);
     const poleRef = useRef<THREE.Mesh>(null);
 
     // Pulsing animation
@@ -26,37 +27,39 @@ export function Checkpoint({ stop }: CheckpointProps) {
     });
 
     return (
-        <group position={stop.position}>
-            {/* Visual Marker with pulsing animation */}
-            <mesh
-                ref={markerRef}
-                position={[0, 2, 0]}
-                onPointerOver={() => setHovered(true)}
-                onPointerOut={() => setHovered(false)}
-            >
-                <sphereGeometry args={[0.5, 16, 16]} />
-                <meshStandardMaterial
-                    color={hovered ? "#ff00ff" : "#00ffff"}
-                    emissive={hovered ? "#ff00ff" : "#00ffff"}
-                    emissiveIntensity={3}
-                    toneMapped={false}
-                />
-            </mesh>
+        <group position={stop.position} rotation={rotation}>
+            {/* Holographic Gate */}
+            <group ref={markerRef}>
+                {/* Outer Ring */}
+                <mesh rotation={[0, 0, 0]}>
+                    <torusGeometry args={[5, 0.15, 16, 100]} />
+                    <meshStandardMaterial
+                        color={hovered ? "#ff00ff" : "#00ffff"}
+                        emissive={hovered ? "#ff00ff" : "#00ffff"}
+                        emissiveIntensity={2}
+                        toneMapped={false}
+                    />
+                </mesh>
 
-            {/* Glowing pole with pulsing emissive */}
-            <mesh ref={poleRef} position={[0, 1, 0]}>
-                <cylinderGeometry args={[0.08, 0.08, 2]} />
-                <meshStandardMaterial
-                    color="#00ffff"
-                    emissive="#00ffff"
-                    emissiveIntensity={2}
-                    toneMapped={false}
-                />
-            </mesh>
+                {/* Inner Energy Field (Subtle) */}
+                <mesh rotation={[0, 0, 0]}>
+                    <cylinderGeometry args={[4.8, 4.8, 0.1, 64]} />
+                    <meshBasicMaterial
+                        color={hovered ? "#ff00ff" : "#00ffff"}
+                        opacity={0.1}
+                        transparent
+                        side={THREE.DoubleSide}
+                    />
+                </mesh>
+            </group>
 
-            {/* Label with better visibility */}
-            <Html position={[0, 3, 0]} center distanceFactor={10}>
-                <div className="bg-black/90 text-cyan-400 px-3 py-1.5 rounded border-2 border-cyan-500 text-sm font-bold whitespace-nowrap shadow-lg shadow-cyan-500/50">
+            {/* Label */}
+            <Html position={[0, 6.5, 0]} center distanceFactor={20}>
+                <div className={`
+                    px-4 py-2 rounded-lg border-2 
+                    ${hovered ? 'border-fuchsia-500 bg-fuchsia-900/80 text-fuchsia-100 shadow-fuchsia-500/50' : 'border-cyan-500 bg-cyan-900/80 text-cyan-100 shadow-cyan-500/50'}
+                    text-lg font-bold whitespace-nowrap shadow-lg backdrop-blur-sm transition-all duration-300
+                `}>
                     {stop.year}
                 </div>
             </Html>

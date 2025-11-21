@@ -1,9 +1,9 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { useStore } from '../store';
 import { stops } from '../data/stops';
-import { Trail } from '@react-three/drei';
+import { Trail, Edges } from '@react-three/drei';
 
 interface CarProps {
     curve: THREE.CatmullRomCurve3;
@@ -16,7 +16,6 @@ export function Car({ curve }: CarProps) {
 
     // Local state for smooth movement
     const [targetProgress, setTargetProgress] = useState(0);
-    const speed = useRef(0);
 
     // Handle scroll
     useEffect(() => {
@@ -72,18 +71,17 @@ export function Car({ curve }: CarProps) {
 
         // Get position on curve
         const position = curve.getPointAt(newProgress);
-        const tangent = curve.getTangentAt(newProgress);
 
-        // Update car position and rotation
+        // Update car position
         ref.current.position.copy(position);
 
-        // Look ahead
+        // Look ahead for rotation
         const lookAt = curve.getPointAt(Math.min(1, newProgress + 0.01));
         ref.current.lookAt(lookAt);
 
         // Update camera to follow car
         // Third person view: behind and slightly above
-        const cameraOffset = new THREE.Vector3(0, 1.5, -6);
+        const cameraOffset = new THREE.Vector3(0, 2, -8);
         cameraOffset.applyQuaternion(ref.current.quaternion);
         const cameraPos = position.clone().add(cameraOffset);
 
@@ -111,13 +109,7 @@ export function Car({ curve }: CarProps) {
 
     return (
         <group ref={ref}>
-            {/* Car Body */}
-            <Trail width={1} length={10} color={new THREE.Color("cyan")} attenuation={(t) => t * t}>
-                <mesh position={[0, 0.5, 0]}>
-                    <boxGeometry args={[1, 0.5, 2]} />
-                    <meshStandardMaterial color="cyan" emissive="cyan" emissiveIntensity={0.5} />
-                </mesh>
-            </Trail>
+            <CarModel />
 
             {/* Headlights */}
             <spotLight
@@ -130,15 +122,107 @@ export function Car({ curve }: CarProps) {
                 color="cyan"
                 target-position={[0, 0, 10]}
             />
+        </group>
+    );
+}
 
-            {/* Trail */}
-            {/* Note: Trail needs to be imported from @react-three/drei. 
-          Since I can't easily add imports with replace_file_content in this block without context,
-          I will do it in a separate step or assume the user can add it.
-          Actually, let's try to be complete. I'll update the imports in a separate call if needed,
-          but for now let's just add the light and better material. 
-          Trail might be tricky without the import. Let's stick to lights first.
-      */}
+function CarModel() {
+    const shape = useMemo(() => {
+        const s = new THREE.Shape();
+        // Create a sleek, aerodynamic profile
+        s.moveTo(0, 0);
+        s.lineTo(2, 0); // Bottom
+        s.lineTo(2.2, 0.5); // Rear bumper
+        s.lineTo(2, 1.2); // Rear deck
+        s.lineTo(1.2, 1.8); // Roof rear
+        s.lineTo(-0.5, 1.6); // Roof front
+        s.lineTo(-1.8, 0.8); // Hood
+        s.lineTo(-2, 0.2); // Front bumper
+        s.lineTo(-1.8, 0); // Front bottom
+        s.lineTo(0, 0);
+        return s;
+    }, []);
+
+    const extrudeSettings = {
+        steps: 1,
+        depth: 1.6, // Car width
+        bevelEnabled: true,
+        bevelThickness: 0.1,
+        bevelSize: 0.1,
+        bevelSegments: 2
+    };
+
+    return (
+        <group>
+            {/* Body - Centered */}
+            {/* 
+                Shape is defined in XY plane (Length along X).
+                Extrusion is along Z (Width). Depth is 1.6.
+                Rotation [0, PI/2, 0] rotates:
+                - Local X (Length) -> World Z
+                - Local Z (Width) -> World X (or -X)
+
+                If Local Z goes 0 to 1.6.
+                And rotation maps Z to -X (assuming standard rotation).
+                Then body goes 0 to -1.6 in World X.
+                To center on X=0, we need to shift by +0.8.
+
+                Shape is centered in Local X (-2 to 2), so centered in World Z.
+            */}
+            {/* Glowing Strips (Inner/Outer Shell) */}
+            <mesh position={[-0.825, 0.4, 0]} rotation={[0, Math.PI / 2, 0]}>
+                <extrudeGeometry args={[shape, { ...extrudeSettings, depth: 1.65, bevelEnabled: false }]} />
+                <meshBasicMaterial color="cyan" opacity={0.3} transparent />
+            </mesh>
+
+            {/* Body - Centered */}
+            {/* 
+                Total depth with bevel = 1.6 + 2*0.1 = 1.8.
+                Center offset = 1.8 / 2 = 0.9.
+                Rotation maps Z to X. Extrusion goes 0 to 1.8 in X.
+                Need to shift by -0.9 to center on 0.
+            */}
+            <mesh position={[-0.9, 0.4, 0]} rotation={[0, Math.PI / 2, 0]}>
+                <extrudeGeometry args={[shape, extrudeSettings]} />
+                <meshStandardMaterial
+                    color="#1a1a1a"
+                    roughness={0.3}
+                    metalness={0.8}
+                    emissive="#001111"
+                    emissiveIntensity={0.2}
+                />
+                <Edges
+                    threshold={15}
+                    color="cyan"
+                />
+            </mesh>
+
+            {/* Wheels */}
+            <Wheel position={[1.2, 0.4, 0.9]} />
+            <Wheel position={[-1.2, 0.4, 0.9]} />
+            <Wheel position={[1.2, 0.4, -0.9]} />
+            <Wheel position={[-1.2, 0.4, -0.9]} />
+        </group>
+    );
+}
+
+function Wheel({ position }: { position: [number, number, number] }) {
+    return (
+        <group position={position}>
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <cylinderGeometry args={[0.4, 0.4, 0.3, 32]} />
+                <meshStandardMaterial color="#111" />
+            </mesh>
+            {/* Glowing Rim */}
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[0.3, 0.05, 16, 32]} />
+                <meshBasicMaterial color="cyan" />
+            </mesh>
+            {/* Inner Glow */}
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <cylinderGeometry args={[0.25, 0.25, 0.31, 16]} />
+                <meshBasicMaterial color="cyan" opacity={0.2} transparent />
+            </mesh>
         </group>
     );
 }
