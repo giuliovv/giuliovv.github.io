@@ -1,8 +1,9 @@
-import { Html } from '@react-three/drei';
+import { Text } from '@react-three/drei';
 import type { Stop } from '../data/stops';
 import { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 interface CheckpointProps {
     stop: Stop;
@@ -11,8 +12,12 @@ interface CheckpointProps {
 
 export function Checkpoint({ stop, rotation }: CheckpointProps) {
     const [hovered, setHovered] = useState(false);
+    const [clicked, setClicked] = useState(false);
     const markerRef = useRef<THREE.Group>(null);
     const poleRef = useRef<THREE.Mesh>(null);
+
+    // Detect if we're on desktop (md breakpoint and up)
+    const isDesktop = useMediaQuery('(min-width: 768px)');
 
     // Pulsing animation
     useFrame((state) => {
@@ -26,16 +31,24 @@ export function Checkpoint({ stop, rotation }: CheckpointProps) {
         }
     });
 
+    // Show label if: desktop OR (mobile AND clicked)
+    const showLabel = isDesktop || clicked;
+
     return (
         <group position={stop.position} rotation={rotation}>
             {/* Holographic Gate */}
-            <group ref={markerRef}>
+            <group
+                ref={markerRef}
+                onClick={() => setClicked(!clicked)}
+                onPointerOver={() => setHovered(true)}
+                onPointerOut={() => setHovered(false)}
+            >
                 {/* Outer Ring */}
                 <mesh rotation={[0, 0, 0]}>
                     <torusGeometry args={[5, 0.15, 16, 100]} />
                     <meshStandardMaterial
-                        color={hovered ? "#ff00ff" : "#00ffff"}
-                        emissive={hovered ? "#ff00ff" : "#00ffff"}
+                        color="#00ffff"
+                        emissive="#00ffff"
                         emissiveIntensity={2}
                         toneMapped={false}
                     />
@@ -45,7 +58,7 @@ export function Checkpoint({ stop, rotation }: CheckpointProps) {
                 <mesh rotation={[0, 0, 0]}>
                     <cylinderGeometry args={[4.8, 4.8, 0.1, 64]} />
                     <meshBasicMaterial
-                        color={hovered ? "#ff00ff" : "#00ffff"}
+                        color="#00ffff"
                         opacity={0.1}
                         transparent
                         side={THREE.DoubleSide}
@@ -53,16 +66,33 @@ export function Checkpoint({ stop, rotation }: CheckpointProps) {
                 </mesh>
             </group>
 
-            {/* Label */}
-            <Html position={[0, 6.5, 0]} center distanceFactor={20}>
-                <div className={`
-                    px-4 py-2 rounded-lg border-2 
-                    ${hovered ? 'border-fuchsia-500 bg-fuchsia-900/80 text-fuchsia-100 shadow-fuchsia-500/50' : 'border-cyan-500 bg-cyan-900/80 text-cyan-100 shadow-cyan-500/50'}
-                    text-lg font-bold whitespace-nowrap shadow-lg backdrop-blur-sm transition-all duration-300
-                `}>
-                    {stop.year}
-                </div>
-            </Html>
+            {/* 3D Text Label - conditionally rendered */}
+            {showLabel ? (
+                <group position={[0, 6.5, 0]}>
+                    {/* Background plane for better readability */}
+                    <mesh position={[0, 0, -0.1]}>
+                        <planeGeometry args={[3.5, 1.2]} />
+                        <meshBasicMaterial
+                            color="#164e63"
+                            opacity={0.8}
+                            transparent
+                        />
+                    </mesh>
+
+                    {/* 3D Text */}
+                    <Text
+                        position={[0, 0, 0]}
+                        fontSize={0.6}
+                        color="#e0f2fe"
+                        anchorX="center"
+                        anchorY="middle"
+                        outlineWidth={0.02}
+                        outlineColor="#0891b2"
+                    >
+                        {stop.year}
+                    </Text>
+                </group>
+            ) : null}
         </group>
     );
 }
