@@ -31,8 +31,8 @@ export function Checkpoint({ stop, rotation }: CheckpointProps) {
         }
     });
 
-    // Show label if: desktop OR (mobile AND clicked)
-    const showLabel = isDesktop || clicked;
+    // Always show label
+    const showLabel = true;
 
     return (
         <group position={stop.position} rotation={rotation}>
@@ -68,7 +68,7 @@ export function Checkpoint({ stop, rotation }: CheckpointProps) {
 
             {/* 3D Text Label - conditionally rendered */}
             {showLabel ? (
-                <group position={[0, 6.5, 0]}>
+                <group position={[0, 6.5, 0]} rotation={[0, Math.PI, 0]}>
                     {/* Background plane for better readability */}
                     <mesh position={[0, 0, -0.1]}>
                         <planeGeometry args={[3.5, 1.2]} />
