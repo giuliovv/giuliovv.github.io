@@ -28,9 +28,11 @@ export function Car({ curve }: CarProps) {
         return () => window.removeEventListener('wheel', handleWheel);
     }, []);
 
-    // Handle keyboard
+    // Handle keyboard and touch
     useEffect(() => {
         const keys = { w: false, s: false, ArrowUp: false, ArrowDown: false };
+        const touches = { left: false, right: false };
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key in keys) {
                 keys[e.key as keyof typeof keys] = true;
@@ -42,13 +44,41 @@ export function Car({ curve }: CarProps) {
             }
         };
 
+        const handleTouchStart = (e: TouchEvent) => {
+            for (let i = 0; i < e.touches.length; i++) {
+                const touch = e.touches[i];
+                if (touch.clientX < window.innerWidth / 2) {
+                    touches.left = true;
+                } else {
+                    touches.right = true;
+                }
+            }
+        };
+
+        const handleTouchEnd = (e: TouchEvent) => {
+            // Reset and re-evaluate active touches
+            touches.left = false;
+            touches.right = false;
+            for (let i = 0; i < e.touches.length; i++) {
+                const touch = e.touches[i];
+                if (touch.clientX < window.innerWidth / 2) {
+                    touches.left = true;
+                } else {
+                    touches.right = true;
+                }
+            }
+        };
+
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
+        window.addEventListener('touchcancel', handleTouchEnd);
 
         const interval = setInterval(() => {
             let delta = 0;
-            if (keys.w || keys.ArrowUp) delta += 0.001;
-            if (keys.s || keys.ArrowDown) delta -= 0.001;
+            if (keys.w || keys.ArrowUp || touches.right) delta += 0.001;
+            if (keys.s || keys.ArrowDown || touches.left) delta -= 0.001;
 
             if (delta !== 0) {
                 setTargetProgress(p => Math.max(0, Math.min(1, p + delta)));
@@ -58,6 +88,9 @@ export function Car({ curve }: CarProps) {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+            window.removeEventListener('touchcancel', handleTouchEnd);
             clearInterval(interval);
         };
     }, []);
